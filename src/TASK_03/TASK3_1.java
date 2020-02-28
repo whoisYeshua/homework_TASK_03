@@ -2,13 +2,18 @@ package TASK_03;
 /*Напишите программу, которая с консоли считывает поисковый запрос, и выводит
         результат поиска по Википедии.*/
 
-
+import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import java.nio.charset.StandardCharsets;
+
 import java.util.Scanner;
 
 public class TASK3_1 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         // 1. Считать запрос
         System.out.println("Введите запрос для поиска на Wikipedia:");
@@ -20,15 +25,37 @@ public class TASK3_1 {
         // https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&utf8=&srlimit=1&srsearch= - тело запроса, где query - взаимодействие с MediaWiki, list=search - полнотекствовй поиск, format=json&utf8= - вывод в JSON-формате в кодировке UTF-8, srlimit=1 - выводится только первый результат, так дано в задание, srsearch - что будем искать
         String url = "https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&utf8=&srlimit=1&srsearch=" + phrase;
 
+        // 2.2 Запрос к серверу
+        String response = sendGet(url);
+        System.out.println(response);
 
-        String wikiurl = "https://ru.wikipedia.org/wiki/" + phrase;
-        System.out.println(url);
-        System.out.println(wikiurl);
+
+
+//        String wikiurl = "https://en.wikipedia.org/w/index.php?sort=relevance&search=" + phrase;
+//        System.out.println(url);
+//        System.out.println(wikiurl);
     }
 
     // Кодирование запроса
-    static String encode(String phrase) {
+    private static String encode(String phrase) {
         return URLEncoder.encode(phrase, StandardCharsets.UTF_8);
+    }
+
+    private static String sendGet(String url) throws Exception {
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .setHeader("User-Agent", "Java 11 HttpClient Bot")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // print status code
+        System.out.println(response.statusCode());
+
+        return response.body();
     }
 
 }
