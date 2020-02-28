@@ -2,6 +2,8 @@ package TASK_03;
 /*Напишите программу, которая с консоли считывает поисковый запрос, и выводит
         результат поиска по Википедии.*/
 
+import java.lang.reflect.Type;
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -10,7 +12,13 @@ import java.net.http.HttpResponse;
 
 import java.nio.charset.StandardCharsets;
 
+import java.util.Map;
 import java.util.Scanner;
+import java.util.List;
+
+
+import com.google.gson.*; // File -> Project Structure... -> Libraries -> From Maven...
+import com.google.gson.reflect.TypeToken;
 
 public class TASK3_1 {
     public static void main(String[] args) throws Exception {
@@ -27,7 +35,12 @@ public class TASK3_1 {
 
         // 2.2 Запрос к серверу
         String response = sendGet(url);
-        System.out.println(response);
+
+        // 2.3 Обработка запроса
+        Search expose = ExposeGson.exposeGson(response);
+        System.out.println(expose.title+"\n"+expose.snippet);
+
+
 
 
 
