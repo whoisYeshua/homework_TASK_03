@@ -9,8 +9,6 @@ public class ExposeGson {
 
         Gson gson = new Gson();
         Wikires result = gson.fromJson(jsonString, Wikires.class);
-        System.out.println(result);
-
         return result.query.search.get(0);
     }
 }

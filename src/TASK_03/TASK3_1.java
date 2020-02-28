@@ -36,9 +36,13 @@ public class TASK3_1 {
         // 2.2 Запрос к серверу
         String response = sendGet(url);
 
-        // 2.3 Обработка запроса
+        // 2.3 Обработка ответа
         Search expose = ExposeGson.exposeGson(response);
-        System.out.println(expose.title+"\n"+expose.snippet);
+
+        // 3 Форматирование и вывод ответа
+        System.out.println(expose.title+"\n"+format(expose.snippet)+"...\n"+"Сслыка: https://ru.wikipedia.org/w/index.php?sort=relevance&search=" + phrase);
+
+
 
 
 
@@ -65,10 +69,18 @@ public class TASK3_1 {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // print status code
-        System.out.println(response.statusCode());
+        //System.out.println(response.statusCode()); - статус-код
 
         return response.body();
+    }
+
+    static String format(String snippetString) {
+        snippetString = snippetString.replace("<span class=\"searchmatch\">", "");
+        snippetString = snippetString.replace("</span>", "");
+        snippetString = snippetString.replace("&lt;", "<");
+        snippetString = snippetString.replace("&gt;", ">");
+        snippetString = snippetString.replace("&quot;", "\"");
+        return snippetString;
     }
 
 }
