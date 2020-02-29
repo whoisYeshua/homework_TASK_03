@@ -2,8 +2,6 @@ package TASK_03;
 /*Напишите программу, которая с консоли считывает поисковый запрос, и выводит
         результат поиска по Википедии.*/
 
-import java.lang.reflect.Type;
-
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -12,13 +10,7 @@ import java.net.http.HttpResponse;
 
 import java.nio.charset.StandardCharsets;
 
-import java.util.Map;
 import java.util.Scanner;
-import java.util.List;
-
-
-import com.google.gson.*; // File -> Project Structure... -> Libraries -> From Maven...
-import com.google.gson.reflect.TypeToken;
 
 public class TASK3_1 {
     public static void main(String[] args) throws Exception {
@@ -42,15 +34,6 @@ public class TASK3_1 {
         // 3 Форматирование и вывод ответа
         System.out.println(expose.title+"\n"+format(expose.snippet)+"...\n"+"Сслыка: https://ru.wikipedia.org/w/index.php?sort=relevance&search=" + phrase);
 
-
-
-
-
-
-
-//        String wikiurl = "https://en.wikipedia.org/w/index.php?sort=relevance&search=" + phrase;
-//        System.out.println(url);
-//        System.out.println(wikiurl);
     }
 
     // Кодирование запроса
@@ -58,22 +41,24 @@ public class TASK3_1 {
         return URLEncoder.encode(phrase, StandardCharsets.UTF_8);
     }
 
+    // Запрос к серверу
     private static String sendGet(String url) throws Exception {
 
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .GET()
+                .GET() // Можно и не указывать, тк идет по дефолту
                 .uri(URI.create(url))
                 .setHeader("User-Agent", "Java 11 HttpClient Bot")
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()); // Обработка тела ответа в виде строки
 
         //System.out.println(response.statusCode()); - статус-код
 
-        return response.body();
+        return response.body(); // Возврат не всего ответа, а только содержимого body
     }
 
+    // Форматируем содиржимое snippet, убирая html-теги
     static String format(String snippetString) {
         snippetString = snippetString.replace("<span class=\"searchmatch\">", "");
         snippetString = snippetString.replace("</span>", "");
